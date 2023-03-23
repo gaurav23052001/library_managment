@@ -1,7 +1,7 @@
 const mongoose=require('mongoose');
 // mongoose.set('strictquery',false);
 
-mongoose.connect("mongodb://localhost:27017/finalAssesment",{
+mongoose.connect("mongodb+srv://gaurav12:Gaurav12@cluster0.wx2cuxc.mongodb.net/finalAssesment",{
    useCreateIndex:true,
     useNewUrlParser:true,
     useUnifiedTopology:true

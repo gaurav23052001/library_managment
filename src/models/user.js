@@ -38,54 +38,7 @@ const UserSchema=new mongooes.Schema({
         type:String,
     }
    }],
-//    bookinfo:[
-//     {
-//         id_info: {
-//             id:{
-//                 type:mongooes.Schema.Types.ObjectId,
-//                 ref:'activity'
-//             },
-//             issueDate: Date,
-//             returnbook: Date
-//         }
-//     }
-//    ],
-   responsibilitys:{
-    type:Boolean,
-    default:false
-   }
 })
-
-
-//token for admin
-// UserSchema.methods.generateAuthTokenadmin=async function(){
-//     try {
-//         console.log(this._id);
-//         const token=jwt.sign({_id:this._id.toString(),role:this.role.toString()},"thisismysecaratekeythatsto");
-//         this.tokens=this.tokens.concat({token:token});
-//         await this.save(); 
-//         console.log(token);
-//         return token;
-//     } catch (e) {
-//         res.send("token genrate error")
-//     }
-// }
-
-
-// UserSchema.statics.findByCredentials=async(email,password)=>{
-//     const User=await user.findOne({email})
-//     if(!User){
-//         throw new Error('Unable to login')
-//     }
-    
-//     const ismatch = await bcrypt.compare(password, User.password)
-   
-//     if(!ismatch){
-//         throw new Error('Unable to login')
-//     }
-
-//     return User
-// }
 
 const user =new mongooes.model("user",UserSchema); 
 module.exports =user;

@@ -1,5 +1,4 @@
 const mongoose= require("mongoose");
-const validator=require("validator");
 
 const BookSchema=new mongoose.Schema({
     bookId :{
@@ -21,16 +20,6 @@ const BookSchema=new mongoose.Schema({
         default: 'Available',
         required: true
       },
-      ownerId : {
-        type : mongoose.Schema.Types.ObjectId,
-    },
-      issue_date: {
-        type:Date,
-      },
-      return_date: {
-        type:Date,
-      }
-      
 })
 
 

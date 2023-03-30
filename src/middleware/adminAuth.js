@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken')
-const User = require('../model/user')
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 const adminauth = async (req, res, next) => {
     try {
         const token = req.header('Authorization').replace('Bearer ', '')
-        const decoded = jwt.verify(token, process.env.TOKEN_VERIFY);      // verify token
+        const decoded = jwt.verify(token, process.env.TOKEN_VERIFY_ADMIN);      // verify token
         const user = await User.findById(decoded._id);
 
         if(user.role == 'user'){

@@ -1,38 +1,63 @@
 const User=require('../models/user');
-const bcrypt=require('bcryptjs');
+const Book=require('../models/book');
+const Issue=require('../models/issuehistory');
+const common=require('../utils/common');
+const services=require('../services/admin');
 
-exports.adduser=async (req, res) => {
+exports.issuebook=async (req, res) => {
 
+    const email = req.body.email;
+    const bookId = req.body.bookId;
     try {
-        const spassword=await bcrypt.hash(req.body.password,12);
-        const user = new User({
-            name: req.body.name,
-            email: req.body.email,
-            password:spassword,   
-            address: req.body.address,
-        })
+        const book = await Book.findOne({bookId});
+        const user = await Book.findOne({email});
+        
+        if(!book){
+            throw new Error('Invalid book id');
+        }
+        if(!user){
+            throw new Error('user not found');
+        }
+        
+        if(book.issue){
+            throw new Error('Book is already issued');
+        }
 
-        await user.save();
-        return res.status(201).send({ message: 'User register successfully', data: user, token, status: 201 });
+        const issue = new Issue({
+            bookId : book.bookId,
+            ownerId : user._id,
+        });
+
+        await issue.save();
+        book.status = "Issued";
+        await book.save();
+
+        res.send({message:"Book issued"});
+    } catch (error) {
+        res.status(400).send({error : error.message});
+    }
+};
+
+exports.returnbook=async(req, res) =>{
+    const bookId = req.body.bookId;
+    try {
+        const book = await Book.findOne({bookId});
+
+        if(!book){
+            throw new Error('Invalid book id');
+        }
+
+        if(book.avilable){
+            throw new Error('Book is already returned');
+        }
+
+        book.ownerId = null;
+        book.status = "Available";
+        book.re
+
+    } catch (error) {
+        res.status(400).send({error : error.message});
+    }
+};
+
    
-    }
-    catch (err) {
-        res.send(err);
-    }
-};
-
-exports.loginuser= async (req, res) => {
-    try {
-        
-        const user = await User.findByCredentials(req.body.email, req.body.password)
-        
-        const token = await user.generateAuthToken() ;
-
-        res.status(200).send({message:'User login successfully', data:user, status : 200 })
-    } catch (e) {
-        console.log("error => ",e)
-        res.status(400).send({message:'Enter the correct credidentials', data:null, status : 400 })
-    }
-};
-
-

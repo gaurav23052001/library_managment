@@ -1,5 +1,5 @@
 const Book=require('../models/book');
-
+const count=0;
 const addbook=async(req,res)=>{
     try {
         const book = new Book({
@@ -8,8 +8,7 @@ const addbook=async(req,res)=>{
             author: req.body.author,
         });
         await book.save(book);
-        console.log(req.body);
-         res.status(201).send({ message: 'Book added successfully', data: book, status: 201 })
+         res.status(201).send({ message: 'Book added successfully', status: 201 })
     }
     catch (err) {
         res.send(err);
@@ -18,7 +17,33 @@ const addbook=async(req,res)=>{
 
 const readbook=async(req,res)=>{
     try {
-        const bookData = await Book.find();
+        let arr =[]
+        const bookData = await Book.distinct('name');
+        for(let i=0;i<bookData.length;i++){
+           let n = await Book.count({name : bookData[i]})
+         let issued_book=await Book.count({name : bookData[i],status:'Issued'})
+         const object={
+            name:bookData[i],
+            total:n,
+            issued:issued_book,
+            avilable:n-issued_book
+        }
+            arr.push(object)
+        }
+          
+        res.send(arr);
+    } catch (error) {
+        res.send(error)
+    }
+};
+
+const readbookId=async(req,res)=>{
+    try {
+        const bookId =req.params.id;
+        const bookData = await Book.findOne({bookId});
+        if (!bookData) {
+            return res.status(404).send();
+        } 
         res.send(bookData);
     } catch (error) {
         res.send(error)
@@ -29,7 +54,7 @@ const updatebook=async(req,res)=>{
     try {
         const _id =req.params.id;
         const updatebook = await Book.findByIdAndUpdate(_id,req.body);
-        res.send(updateuser);
+        res.send({message:"updation sucessfully"});
     } catch (error) {
         res.status(404).send(error);
     }
@@ -48,5 +73,5 @@ const deletebook=async(req,res)=>{
 };
 
 module.exports={
-    addbook,readbook,updatebook,deletebook
+    addbook,readbook,updatebook,deletebook,readbookId
 }

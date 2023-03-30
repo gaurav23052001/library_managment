@@ -1,14 +1,10 @@
 const Book=require('../models/book');
 const count=0;
+
 const addbook=async(req,res)=>{
     try {
-        const book = new Book({
-            bookId : req.body.bookId,
-            name: req.body.name,
-            author: req.body.author,
-        });
-        await book.save(book);
-         res.status(201).send({ message: 'Book added successfully', status: 201 })
+        const response = await services.addbook(req);
+        return res.status(201).send(response);
     }
     catch (err) {
         res.send(err);
@@ -29,7 +25,9 @@ const readbook=async(req,res)=>{
             avilable:n-issued_book
         }
             arr.push(object)
+
         }
+
           
         res.send(arr);
     } catch (error) {
@@ -53,8 +51,8 @@ const readbookId=async(req,res)=>{
 const updatebook=async(req,res)=>{
     try {
         const _id =req.params.id;
-        const updatebook = await Book.findByIdAndUpdate(_id,req.body);
-        res.send({message:"updation sucessfully"});
+      const response= await services.updatebook(_id,req.body);
+      res.status(200).send(response);
     } catch (error) {
         res.status(404).send(error);
     }

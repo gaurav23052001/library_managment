@@ -9,30 +9,8 @@ exports.issuebook=async (req, res) => {
     const email = req.body.email;
     const bookId = req.body.bookId;
     try {
-        const book = await Book.findOne({bookId});
-        const user = await Book.findOne({email});
-        
-        if(!book){
-            throw new Error('Invalid book id');
-        }
-        if(!user){
-            throw new Error('user not found');
-        }
-        
-        if(book.issue){
-            throw new Error('Book is already issued');
-        }
-
-        const issue = new Issue({
-            bookId : book.bookId,
-            ownerId : user._id,
-        });
-
-        await issue.save();
-        book.status = "Issued";
-        await book.save();
-
-        res.send({message:"Book issued"});
+        const response= await services.issubook(email, bookId);
+        return res.status(201).send(response);
     } catch (error) {
         res.status(400).send({error : error.message});
     }
@@ -41,23 +19,22 @@ exports.issuebook=async (req, res) => {
 exports.returnbook=async(req, res) =>{
     const bookId = req.body.bookId;
     try {
-        const book = await Book.findOne({bookId});
-
-        if(!book){
-            throw new Error('Invalid book id');
-        }
-
-        if(book.avilable){
-            throw new Error('Book is already returned');
-        }
-
-        book.ownerId = null;
-        book.status = "Available";
-        book.re
-
+        const response= await services.returnbook(bookId)
+        return res.status(201).send(response);
+    
     } catch (error) {
         res.status(400).send({error : error.message});
     }
 };
+
+exports.history=async(req,res)=>{
+    try {
+        const history= await Issue.find();
+        res.send(history);
+
+    } catch (error) {
+        res.status(400).send({message :'unable to fetch history'});
+    }
+}
 
    

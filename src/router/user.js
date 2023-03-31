@@ -8,5 +8,6 @@ userRouter.post('/signupUser',userController.adduser);
 userRouter.post('/loginUser',userController.loginuser);
 userRouter.get('/getUser',userAuth,userController.getuser);
 userRouter.post('/uploadProfile',userAuth,upload.single('image'),userController.uploadprofilepic);
+userRouter.get('/issuedBook',userAuth,userController.Issuedbook);
 
 module.exports=userRouter;

@@ -1,4 +1,5 @@
 const Book=require('../models/book');
+const services=require("../services/book")
 const count=0;
 
 const addbook=async(req,res)=>{
@@ -13,23 +14,9 @@ const addbook=async(req,res)=>{
 
 const readbook=async(req,res)=>{
     try {
-        let arr =[]
-        const bookData = await Book.distinct('name');
-        for(let i=0;i<bookData.length;i++){
-           let n = await Book.count({name : bookData[i]})
-         let issued_book=await Book.count({name : bookData[i],status:'Issued'})
-         const object={
-            name:bookData[i],
-            total:n,
-            issued:issued_book,
-            avilable:n-issued_book
-        }
-            arr.push(object)
+        const response = await services.readbook(req);
+        return res.status(201).send(response);
 
-        }
-
-          
-        res.send(arr);
     } catch (error) {
         res.send(error)
     }
@@ -51,7 +38,7 @@ const readbookId=async(req,res)=>{
 const updatebook=async(req,res)=>{
     try {
         const _id =req.params.id;
-      const response= await services.updatebook(_id,req.body);
+      const response= await services.updatebook(_id,req);
       res.status(200).send(response);
     } catch (error) {
         res.status(404).send(error);

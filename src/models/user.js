@@ -38,6 +38,10 @@ const UserSchema=new mongooes.Schema({
         type:String,
     }
    }],
+   blacklist:{
+     type: Boolean,
+    default: false
+ }
 })
 
 const user =new mongooes.model("user",UserSchema); 

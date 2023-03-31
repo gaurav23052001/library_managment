@@ -36,7 +36,15 @@ exports.uploadprofilepic= async (req, res) => {
     try {
         res.send("proflie picture uploaded");
     } catch (e) {
-        console.log("error => ",e)
         res.status(400).send(e.message);
     }
 };
+
+exports.Issuedbook= async(req ,res)=>{
+    try {
+        const response = await services.Issuedbook(req);
+        return res.status(201).send(response);
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+}

@@ -14,7 +14,8 @@ exports.addbook=async (req, res) => {
       }
 };
 
-exports.readbook=async(arr)=>{
+exports.readbook=async(req)=>{
+    let arr =[]
     const bookData = await Book.distinct('name');
     for(let i=0;i<bookData.length;i++){
        let n = await Book.count({name : bookData[i]})
@@ -26,7 +27,32 @@ exports.readbook=async(arr)=>{
         avilable:n-issued_book
     }
         arr.push(object)
-
     }  
-    res.send(arr);
+    let max=arr[0];
+
+    for(let i=1;i<arr.length;i++){
+        if(arr[i].issued>max.issued){
+            max=arr[i];
+        }
+    }
+    if(req.query.issued){
+        arr = arr.filter((book) => book.issued>0);
+    }
+
+    if(req.query.Avilable){
+        arr = arr.filter((book) => book.avilable>0);
+    }
+
+    if(req.query.sortBy){
+         arr.sort((book1, book2) => book1[req.query.sortBy] - book2[req.query.sortBy]);
+    }
+    return{
+        mostIssuedBook : max,
+        Books : arr
+    };
+};
+
+exports.updatebook=async(_id,req)=>{
+    const updateuser = await User.findByIdAndUpdate(_id,req);
+       return updateuser;
 }

@@ -1,0 +1,295 @@
+swagger : "2.0"
+info :
+  title: 'Swagger UI for the project'
+  description : 'This is the swagger ui made to give the project a UI look'
+  version : '1.0'
+  contact :
+    email : 'gaurav.mishra1@kiwitech.com'
+  servers :
+    -url : 'http://localhost:8000/'
+    description : 'This is my local server'
+
+schemes : ['http','https']
+
+securityDefinitions:
+  authorization:
+    type: apiKey
+    name: authorization
+    in: header
+    description: Requests should pass an authorization header.
+security:
+  - authorization: []
+
+paths:
+  /signupUser:
+    post:
+      summary: 'create the user '
+      description: 'We will now post the json data through swagger and create user'
+      tags:
+      - user
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+      - in: body
+        name : user
+        schema:
+          $ref: "#/components/schemas/users"
+      responses :
+        200:
+          description : 'Sucess'
+          schema :
+            $ref: "#/components/schemas/users"
+
+  /loginUser:
+    post:
+      summary: Login
+      description: This api is used to login the user
+      tags:
+      - user
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+      - in: body
+        name : user
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+      responses :
+        200:
+          description : 'Sucess'
+
+  /getUser:
+    get:
+      summary: 'cheack your own user details'
+      description : 'this api is for cheack profile of users'
+      tags:
+      - user
+      responses : 
+        200:
+          description : 'Sucess'
+          schema :
+            type : string   
+
+  /uploadProfile:
+    post:
+      tags:
+        - user
+      summary: 'image upload'
+      description: 'this api is for uploading profile picture'
+      consumes:
+        - multipart/form-data
+      parameters:
+      - in : formData
+        name: image
+        type: file
+        required: true
+        description: file upload
+      responses:
+        200:
+          description: 'Ok'
+        401:
+          description: 'Unauthorized'
+  
+
+  /issueBook:
+    post:
+      summary: 'this is for issue the book '
+      description: 'here admin will issue the book to user'
+      tags:
+      - Admin
+      security:
+        - authorization: []
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+      - in: body
+        name : issue book
+        schema:
+          type: object
+          properties:
+            bookId:
+              type: string
+            ownerId:
+              type: string    
+      responses :
+        200:
+          description : 'Sucess'
+
+  /returnBook:
+    post:
+      summary: 'this is for the return thr book '
+      description: 'here admin take book return from the user'
+      tags:
+      - Admin
+      security:
+        - authorization: []
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+      - in: body
+        name : return book
+        schema:
+          type: object
+          properties:
+            bookId:
+              type: string
+            email:
+              type: string    
+      responses :
+        200:
+          description : 'Sucess'
+
+  /history:
+    get:
+      summary: 'this is for check history'
+      description : 'this api is for check the record of issue and return'
+      tags:
+      - Admin
+      responses : 
+        200:
+          description : 'Sucess'
+          schema :
+            type : string 
+
+  /blackListUser:
+    get:
+      summary: 'this is for blocklisted user'
+      description : 'this api is for check blocklisted user who will not submitted thier book on time '
+      tags:
+      - Admin
+      responses : 
+        200:
+          description : 'Sucess'
+          schema :
+            type : string 
+
+  /blackListDownload:
+    get:
+      summary: 'this is for doenload blocklisted user'
+      description : 'this api is for download the csv file of blocklisted user '
+      tags:
+      - Admin
+      responses : 
+        200:
+          description : 'Sucess'
+          schema :
+            type : string 
+
+  /addBook:
+    post:
+      summary: 'this is for add the books '
+      description: 'here is the book who will added by the admin'
+      tags:
+      - Book
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+      - in: body
+        name : user
+        schema:
+          type: object
+          properties:
+            bookId:
+              type: string
+            name:
+              type: string
+            author:
+              type: string 
+      responses :
+        200:
+          description : 'Sucess'
+
+  /readBook:
+    get:
+      summary: 'this is for check all books'
+      description : 'this api is for cheack all record of books by admin'
+      tags:
+      - Book
+      responses : 
+        200:
+          description : 'Sucess'
+          schema :
+            type : string           
+          
+  /readBook/{id}:
+    get:
+      summary: 'Request params'
+      description : 'here admin can cheack book details by his id'
+      tags:
+      - Book
+      parameters:
+        - name : id
+          in: path
+          required : true
+          schema:
+            type : string
+      responses : 
+        200:
+          description : 'Sucess'
+          schema :
+            type : string   
+
+  /updateBook/{id}:
+    put:
+      summary: Update book
+      description: 'here is book update bt the admin'
+      tags:
+      - Book
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the book to update
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User updated successfully
+        '404':
+          description: User not found   
+
+  /deleteBook/{id}:
+    delete:
+      summary: Delete book from library
+      tags:
+      - Book
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the book to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User updated successfully
+        '404':
+          description: User not found           
+
+components:
+  schemas:
+    users:
+      type : object
+      properties : 
+        name :
+          type : string
+        email :
+          type : string
+        password :
+          type : string
+        address:
+          type : string

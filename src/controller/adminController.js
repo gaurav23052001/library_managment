@@ -30,7 +30,7 @@ exports.returnbook=async(req, res) =>{
 
 exports.history=async(req,res)=>{
     try {
-        const history= await Issue.find();
+        const history= await Issue.find().populate('ownerId');
         res.send(history);
 
     } catch (error) {

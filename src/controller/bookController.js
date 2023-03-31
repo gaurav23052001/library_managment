@@ -47,10 +47,10 @@ const updatebook=async(req,res)=>{
 
 const deletebook=async(req,res)=>{
     try {
-        const deleteBooks= await Book.findByIdAndDelete(req.params.id);
         if(!req.params.id){
             return res.status(404).send();
         }
+        const deleteBooks= await Book.findByIdAndDelete(req.params.id);
         res.send(deleteBooks);
     } catch (error) {
         res.send(error)

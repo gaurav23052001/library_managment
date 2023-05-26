@@ -39,27 +39,36 @@ exports.loginUser = async (email, password) => {
 };
 
 exports.Issuedbook= async (req) =>{
-  let book;
   const issuebook=await Issue.find({ownerId:req.user._id});
+  const returnData = [];
   for(let i=0;i<issuebook.length;i++){
-     book = await Book.find({bookId:issuebook[i].bookId});
+    var obj ={};
+    const today=moment();
+    const x = moment(issuebook[i].issuDate);
+    const days=today.diff(x,"days");
+    var book = await Book.find({bookId:issuebook[i].bookId});
+    if(days > 7){
+      obj = {
+        book,
+        message : "you have exceeds the date"
+      }
+    }
+    obj.book = book;
+     obj.days = days;
+     returnData.push(obj)
   }
-  const today=moment();
-  const x=moment(issuebook.issuDate);
-  const days=x.diff(today,"days");
 
-  if(days>7){
-   
-  return {
-    book,
-    days: `Rest days : ${days}`,
-    message : 'you have exceeds the date'
-  } 
+  return{
+    data : returnData
+  }
+};
 
-  }
-  return {
-    book,
-    days: `Rest days : ${days}`
-  }
+exports.uploadImage=async(user,avtar)=>{
+  user.image=avtar;
+  await user.save();
+  return{
+    status : true,
+    message : 'Image uploaded successfully'
+}
 };
 

@@ -34,7 +34,8 @@ exports.getuser= async (req, res) => {
 
 exports.uploadprofilepic= async (req, res) => {
     try {
-        res.send("proflie picture uploaded");
+        const response = await services.uploadImage(req.user,req.file.filename);
+        return res.status(201).send(response);
     } catch (e) {
         res.status(400).send(e.message);
     }

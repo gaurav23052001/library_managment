@@ -17,11 +17,17 @@ exports.issubook = async (email,bookId) =>{
         if(!user){
             throw new Error('user not found');
         }
-        
         if(book.status=='Issued'){
-            throw new Error('Book is already issued');
+          throw new Error('Book is already issued');
         }
+        
+        // if(await Issue.findOne({ownerId : user._id, returnDate: undefined})){
+        //   throw new Error('User cannot issue more than 1')
+        // }
 
+        if(await Issue.countDocuments({ownerId : user._id, returnDate: undefined})>5){
+          throw new Error('User cannot issue more than 1')
+        }
         const issue = new Issue({
             bookId : book.bookId,
             ownerId : user._id,
